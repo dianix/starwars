@@ -1,6 +1,6 @@
 var cargarPagina = function () {
     cargarPersonajes();
-
+    $("body").on("click",".personaje", mostrarDetalles)
 };
 
 var cargarPersonajes = function () {
@@ -21,10 +21,32 @@ var mostrarPersonajes = function (personajes) {
     var $ul = $("#personajes");
     personajes.forEach(function (personaje) {
         var $li = $("<li/>");
+        $li.addClass("personaje");
         $li.text(personaje.name + " - " + personaje.height + " cm");
+        $li.attr("data-url",personaje.homeworld);
         $ul.append($li)
         console.log(personaje.name)
     })
+};
+
+var planetaPlantilla = '<div id="detalle-planeta">'+
+                            '<h2>Planeta: </h2>'+
+                            '<p><strong>Nombre:</strong>__nombre__</p>'+
+                            '<p><strong>Clima:</strong>__clima__</p>'+
+                        '</div>';
+
+var mostrarDetalles = function(){
+    var url = $(this).data("url");
+    var $planetaContenedor = $("#detalle-planeta")
+    $.getJSON(url,function(response){
+        $planetaContenedor.html(planetaPlantilla.replace("__nombre__",response.name)
+        .replace("__clima__",response.climate));
+        
+        console.log(response)
+    
+    })
+    //console.log($(this).data("url"))
+    
 };
 
 $(document).ready(cargarPagina);
